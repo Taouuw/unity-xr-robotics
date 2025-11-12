@@ -19162,11 +19162,11 @@ MonoBehaviour:
   - servo_move_left
   - servo_move_right
   axes:
-  - {x: -1, y: 0, z: 0}
-  - {x: -1, y: 0, z: 0}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: -1, z: 0}
   linkTransforms:
-  - {fileID: 6388895102451605662}
-  - {fileID: 3715496207884372902}
+  - {fileID: 9151788627784858780}
+  - {fileID: 417665368013130109}
   IsJointNamesFromFirstMessage: 0
   default_rotations: []
 --- !u!1 &8444302355340394868

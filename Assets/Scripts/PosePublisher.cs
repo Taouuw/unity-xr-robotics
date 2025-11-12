@@ -15,10 +15,11 @@ public class PosePublisher : MonoBehaviour
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
-
-        ros.RegisterPublisher<PoseMsg>(topicName);
-
-
+        RosTopicState topicState = ros.GetTopic(topicName);
+        if (!topicState.IsPublisher)
+        {
+            ros.RegisterPublisher<PoseMsg>(topicName);
+        }
     }
 
     void PublishMessage()

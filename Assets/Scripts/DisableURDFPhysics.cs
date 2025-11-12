@@ -16,7 +16,7 @@ public class DisableURDFPhysics : MonoBehaviour
             collider.enabled = false;
         }
 
-        Controller controller = GetComponent<Controller>();
+        Unity.Robotics.UrdfImporter.Control.Controller controller = GetComponent<Unity.Robotics.UrdfImporter.Control.Controller>();
         if (controller != null)
         {
             controller.enabled = false;

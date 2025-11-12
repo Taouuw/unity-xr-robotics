@@ -1,35 +1,34 @@
 using RosMessageTypes.Geometry;
-using RosMessageTypes.Std;
+using RosMessageTypes.Nav;
 using Unity.Robotics.ROSTCPConnector;
 using Unity.Robotics.ROSTCPConnector.ROSGeometry;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class PoseSubscriber : MonoBehaviour
+public class OdomSubscriber : MonoBehaviour
 {
     ROSConnection ros;
-    public string topicName = "/unity/vehicle_pose";
+    public string topicName = "/odom";
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         ros = ROSConnection.GetOrCreateInstance();
 
-        ros.Subscribe<PoseMsg>(topicName, ReceiveMessage);
+        ros.Subscribe<OdometryMsg>(topicName, ReceiveMessage);
     }
 
     bool isNaN(PointMsg p)
     {
         return double.IsNaN(p.x) || double.IsNaN(p.y) || double.IsNaN(p.z);
-    }
+    } 
 
-    void ReceiveMessage(PoseMsg msg)
+    void ReceiveMessage(OdometryMsg msg)
     {
 
-        transform.position = msg.position.From<FLU>();
-        transform.rotation = msg.orientation.From<FLU>();
+        transform.position = msg.pose.pose.position.From<FLU>();
+        transform.rotation = msg.pose.pose.orientation.From<FLU>();
 
-        if (isNaN(msg.position))
+        if (isNaN(msg.pose.pose.position))
         {
             transform.position = Vector3.up * 100f;
         }

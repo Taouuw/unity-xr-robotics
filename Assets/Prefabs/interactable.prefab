@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8790199373263234674}
   - component: {fileID: 7448073071709655020}
-  - component: {fileID: 1743075419895935066}
   - component: {fileID: 7101660869299131450}
   - component: {fileID: 2944985988462987782}
   - component: {fileID: 3250550417619893244}
   m_Layer: 0
-  m_Name: target
+  m_Name: interactable
   m_TagString: target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,21 +47,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f3e5118e80bc7b4ea50751791d7f479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsLevel: 0
   virtual_material: {fileID: 2100000, guid: 94d5e83e65b5a6840a9c99e41c2fe628, type: 2}
   model: {fileID: 0}
---- !u!114 &1743075419895935066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 693481233753960774}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d23e1f97eddb6e04b90c2397f9d5adef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  topicName: 
+  child: {fileID: 0}
 --- !u!65 &7101660869299131450
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83,7 +71,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.5, y: 0.5, z: 0.5}
-  m_Center: {x: 0, y: 0.4, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2944985988462987782
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -209,7 +197,7 @@ MonoBehaviour:
   m_SmoothScale: 0
   m_SmoothScaleAmount: 8
   m_TightenScale: 0.1
-  m_ThrowOnDetach: 1
+  m_ThrowOnDetach: 0
   m_ThrowSmoothingDuration: 0.25
   m_ThrowSmoothingCurve:
     serializedVersion: 2

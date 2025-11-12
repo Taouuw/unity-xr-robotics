@@ -60,10 +60,6 @@ public class JointStateSubscriber : MonoBehaviour
             linkTransforms[i].localRotation = default_rotations[i];
             // linkTransforms[i].localEulerAngles += axes[i] * joint_states[i] * 180 / (float)Math.PI;
             linkTransforms[i].Rotate(axes[i], joint_states[i] * 180 / (float)Math.PI, Space.Self);
-            if (math.abs(joint_states[i]) > 0.01f)
-            {
-                Debug.Log(joint_states[i]);
-            }
 
             // linkTransforms[i].Rotate(linkTransforms[i].TransformVector(axes[i]), joint_states[i] * 180 / (float)Math.PI, relativeTo : Space.World); //(angles.x, angles.y, angles.z);
             // linkTransforms[i].Rotate(linkTransforms[i].TransformVector(axes[i]), joint_states[i] * 180 / (float)Math.PI); //(angles.x, angles.y, angles.z);

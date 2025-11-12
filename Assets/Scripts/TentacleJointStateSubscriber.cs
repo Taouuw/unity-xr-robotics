@@ -21,6 +21,7 @@ public class TentacleJointStateSubscriber : SerialJointStateSubscriber
 
         int n = 18;
 
+        jointNames = new string[0];
         for (int i = 1; i < n; i++) 
         {
             jointNames = jointNames.Append("flex_joint_" + arm_name + "_from_" + (i) + "_to_" + (i+1)).ToArray();
