@@ -1,8 +1,11 @@
 using Unity.Robotics.UrdfImporter.Control;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class DisableURDFPhysics : MonoBehaviour
 {
+    public bool setLayerInsteadOfDisable = true;
+    public int layerIndex = 6;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,7 +16,13 @@ public class DisableURDFPhysics : MonoBehaviour
 
         foreach (Collider collider in gameObject.GetComponentsInChildren<Collider>())
         {
-            collider.enabled = false;
+            if (setLayerInsteadOfDisable)
+            {
+                collider.gameObject.layer = layerIndex;
+            } else
+            {
+                collider.enabled = false;
+            }
         }
 
         Unity.Robotics.UrdfImporter.Control.Controller controller = GetComponent<Unity.Robotics.UrdfImporter.Control.Controller>();

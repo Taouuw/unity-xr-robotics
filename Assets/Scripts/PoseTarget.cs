@@ -6,6 +6,7 @@ public class PoseTarget : MonoBehaviour
 {
     public bool IsLevel;
     public Material virtual_material;
+    public Material virtual_material_touching;
     public GameObject model;
     public GameObject child;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,4 +45,21 @@ public class PoseTarget : MonoBehaviour
 
         child.SetActive(false);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        foreach (Renderer model_renderer in model.GetComponentsInChildren<Renderer>())
+        {
+            model_renderer.material = virtual_material_touching;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        foreach (Renderer model_renderer in model.GetComponentsInChildren<Renderer>())
+        {
+            model_renderer.material = virtual_material;
+        }
+    }
+
 }

@@ -3411,6 +3411,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Button2",
+                    "type": "Button",
+                    "id": "16ff7000-c773-42d2-a6bc-7d22e60ea37b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -3433,6 +3442,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Button1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c913546b-1740-429a-b635-927db2b2a83b",
+                    "path": "<ViveController>{LeftHand}/trackpadClicked",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Button2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a65bab4-f96d-4010-be33-41a3edc865f7",
+                    "path": "<ViveController>{RightHand}/trackpadClicked",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Button2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

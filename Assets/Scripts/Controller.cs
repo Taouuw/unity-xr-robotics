@@ -8,6 +8,7 @@ using UnityEditor;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
@@ -26,6 +27,7 @@ public enum ControlMode
 
 public class Controller : MonoBehaviour
 {
+    public InputActionAsset xriActions;
     public GameObject trackedObject;
     bool isHoldingTarget = false;
     public GameObject left_target;
@@ -39,9 +41,10 @@ public class Controller : MonoBehaviour
 
     
     private TMP_Dropdown mode_dropdown;
+    private Toggle grasped_toggle;
     /*
     public Button Button;
-    public Button TeleportButton;
+    public Button TeleportButton;`
     public Toggle RotationToggle;
     public Toggle PositionToggle;
     public Toggle DynamicToggle;
@@ -55,19 +58,31 @@ public class Controller : MonoBehaviour
     private bool trackRotation = true;
     private bool dynamicAttach = true;
     private TentacleArmTargetPublisher tentacleArmTargetPublisher;
+    private EventPublisher eventPublisher;
 
-
+    public void OnHoldButton(InputAction.CallbackContext ctx)
+    {
+        UISwitchMode((int)ControlMode.None);
+    }
     private void Start()
     {
+        InputAction button2action = xriActions.FindAction("Custom/Button2");
+        button2action.performed += OnHoldButton;
+        button2action.Enable();
+
+        eventPublisher = GetComponent<EventPublisher>();
         mode = getMode();
 
         ControlPanel controlPanel = GetComponent<ControlPanel>();
+        controlPanel.addButton("Proceed", new UnityAction(eventPublisher.proceed));
+        controlPanel.addButton("Resend", new UnityAction(eventPublisher.resend));
         controlPanel.addButton("Kill", new UnityAction(UIButton));
         controlPanel.addButton("Teleport", new UnityAction(UITeleportButton));
         controlPanel.addSlider("Arm Bearing", new UnityAction<float>(UIArmBearingSlider));
         controlPanel.addSlider("Arm Spread", new UnityAction<float>(UIArmSpreadSlider));
         controlPanel.addSlider("Grasp", new UnityAction<float>(UIGraspSlider));
         mode_dropdown = controlPanel.addDropdown("Mode", new UnityAction<int>(UISwitchMode), Enum.GetNames(typeof(ControlMode)), (int)mode);
+        grasped_toggle = controlPanel.addToggle("Grasped", new UnityAction<bool>(eventPublisher.set_grasped_navigation), false);
         controlPanel.addToggle("Position", new UnityAction<bool>(UIPositionToggle), trackPosition);
         controlPanel.addToggle("Rotation", new UnityAction<bool>(UIRotationToggle), trackRotation);
         controlPanel.addToggle("Dynamic", new UnityAction<bool>(UIDynamicToggle), dynamicAttach);
@@ -169,6 +184,16 @@ public class Controller : MonoBehaviour
 
     public void releaseObject(UnityEngine.XR.Interaction.Toolkit.SelectExitEventArgs args)
     {
+        // re-enable all other interactors so both can be used again
+        foreach (XRBaseInteractor interactor in new[] { LeftInteractor, RightInteractor })
+        {
+            if (interactor.transform.gameObject != args.interactorObject.transform.gameObject)
+            {
+                interactor.enabled = true;
+            }
+        }
+
+
         if (isHoldingTarget)
         {
             isHoldingTarget = false;
@@ -187,16 +212,18 @@ public class Controller : MonoBehaviour
                 {
                     Destroy(child_transform.gameObject);
                 }
-
+                
                 trackedObject.GetComponentInChildren<PosePublisher>().enabled = true;
                 trackedObject.transform.SetParent(transform);
             }
 
-
+            
             // move the tracked object to the transform of its child which may obey certain behaviours
             Transform trackedChildTransform = trackedObject.GetComponent<PoseTarget>().child.transform;
             trackedObject.transform.SetPositionAndRotation(trackedChildTransform.position, trackedChildTransform.rotation);
             trackedChildTransform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+            eventPublisher.resendAfterDelay(Time.fixedDeltaTime + Time.deltaTime + 0.1f);
         }
     }
 
@@ -250,6 +277,11 @@ public class Controller : MonoBehaviour
             try_disable_tracked_object();
         }
 
+        if (newMode == ControlMode.None)
+        {
+            eventPublisher.hover();
+        }
+          
         if (newMode == ControlMode.Follow)
         {
             left_target.SetActive(true);
@@ -259,6 +291,7 @@ public class Controller : MonoBehaviour
             left_target.SetActive(false);
             right_target.SetActive(false);
         }
+
 
 
 
@@ -304,16 +337,19 @@ public class Controller : MonoBehaviour
 
     void UIArmBearingSlider(float value)
     {
+        grasped_toggle.isOn = false; 
         tentacleArmTargetPublisher.SetArmBearing(value);
     }
 
     void UIArmSpreadSlider(float value)
     {
+        grasped_toggle.isOn = false;
         tentacleArmTargetPublisher.SetArmSpread(value);
     }
 
     void UIGraspSlider(float value)
     {
+        grasped_toggle.isOn = false;
         tentacleArmTargetPublisher.SetTentacleSpread(value);
     }
 }
