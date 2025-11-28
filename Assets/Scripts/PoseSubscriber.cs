@@ -26,13 +26,16 @@ public class PoseSubscriber : MonoBehaviour
     void ReceiveMessage(PoseMsg msg)
     {
 
-        transform.position = msg.position.From<FLU>();
-        transform.rotation = msg.orientation.From<FLU>();
-
         if (isNaN(msg.position))
         {
             transform.position = Vector3.up * 100f;
+            return;
         }
+
+        transform.position = msg.position.From<FLU>();
+        transform.rotation = msg.orientation.From<FLU>();
+
+
     }
 
     // Update is called once per frame

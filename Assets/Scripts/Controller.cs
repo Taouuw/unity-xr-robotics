@@ -17,12 +17,11 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 public enum ControlMode
 {
     None,
-    Automatic,
-    Follow,
-    Mixed,
-    EndEffector,
-    Fine,
-    N_SIZE
+    Command,
+    Embody,
+    // Mixed,
+    // EndEffector,
+    // Fine,
 }
 
 public class Controller : MonoBehaviour
@@ -76,16 +75,16 @@ public class Controller : MonoBehaviour
         ControlPanel controlPanel = GetComponent<ControlPanel>();
         controlPanel.addButton("Proceed", new UnityAction(eventPublisher.proceed));
         controlPanel.addButton("Resend", new UnityAction(eventPublisher.resend));
-        controlPanel.addButton("Kill", new UnityAction(UIButton));
+        controlPanel.addButton("Kill", new UnityAction(eventPublisher.kill));
         controlPanel.addButton("Teleport", new UnityAction(UITeleportButton));
+        mode_dropdown = controlPanel.addDropdown("Mode", new UnityAction<int>(UISwitchMode), Enum.GetNames(typeof(ControlMode)), (int)mode);
+        grasped_toggle = controlPanel.addToggle("Freeze Configuration", new UnityAction<bool>(eventPublisher.set_grasped_navigation), false);
+        controlPanel.addToggle("Manipulate Position", new UnityAction<bool>(UIPositionToggle), trackPosition);
+        controlPanel.addToggle("Manipulate Rotation", new UnityAction<bool>(UIRotationToggle), trackRotation);
+        controlPanel.addToggle("Dynamic Attach", new UnityAction<bool>(UIDynamicToggle), dynamicAttach);
         controlPanel.addSlider("Arm Bearing", new UnityAction<float>(UIArmBearingSlider));
         controlPanel.addSlider("Arm Spread", new UnityAction<float>(UIArmSpreadSlider));
-        controlPanel.addSlider("Grasp", new UnityAction<float>(UIGraspSlider));
-        mode_dropdown = controlPanel.addDropdown("Mode", new UnityAction<int>(UISwitchMode), Enum.GetNames(typeof(ControlMode)), (int)mode);
-        grasped_toggle = controlPanel.addToggle("Grasped", new UnityAction<bool>(eventPublisher.set_grasped_navigation), false);
-        controlPanel.addToggle("Position", new UnityAction<bool>(UIPositionToggle), trackPosition);
-        controlPanel.addToggle("Rotation", new UnityAction<bool>(UIRotationToggle), trackRotation);
-        controlPanel.addToggle("Dynamic", new UnityAction<bool>(UIDynamicToggle), dynamicAttach);
+        controlPanel.addSlider("Limb Spread", new UnityAction<float>(UIGraspSlider));
 
 
         tentacleArmTargetPublisher = gameObject.GetComponent<TentacleArmTargetPublisher>();
@@ -177,7 +176,7 @@ public class Controller : MonoBehaviour
                 trackedObject.GetComponent<PoseTarget>().child.SetActive(true);
             }
 
-            UISwitchMode((int)ControlMode.Automatic);
+            UISwitchMode((int)ControlMode.Command);
 
         }
     }
@@ -251,11 +250,11 @@ public class Controller : MonoBehaviour
     {
         if (is_tracked_object_active())
         {
-            return ControlMode.Automatic;
+            return ControlMode.Command;
         }
         else if (left_target.activeInHierarchy && right_target.activeInHierarchy)
         {
-            return ControlMode.Follow;
+            return ControlMode.Embody;
         }
         else
         {
@@ -272,7 +271,7 @@ public class Controller : MonoBehaviour
             return;
         }
 
-        if (newMode != ControlMode.Automatic)
+        if (newMode != ControlMode.Command)
         {
             try_disable_tracked_object();
         }
@@ -282,7 +281,7 @@ public class Controller : MonoBehaviour
             eventPublisher.hover();
         }
           
-        if (newMode == ControlMode.Follow)
+        if (newMode == ControlMode.Embody)
         {
             left_target.SetActive(true);
             right_target.SetActive(true);
@@ -318,6 +317,7 @@ public class Controller : MonoBehaviour
     {
         //player.transform.rotation = teleportationAnchor.transform.rotation;
         teleportationAnchor.RequestTeleport();
+        // TeleportRequest
     }
 
     void UIRotationToggle(bool value)

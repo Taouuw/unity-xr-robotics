@@ -13,6 +13,7 @@ public class EventPublisher : MonoBehaviour
     public string proceedTopicName = "/unity/proceed";
     public string forceTargetTopicName = "/unity/force_target";
     public string graspedNavigationTopicName = "/unity/grasped_navigation";
+    public string killTopicName = "/unity/kill";
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,6 +31,13 @@ public class EventPublisher : MonoBehaviour
         BoolMsg msg = new BoolMsg();
         msg.data = true;
         ros.Publish(hoverTopicName, msg);
+    }
+
+    public void kill()
+    {
+        BoolMsg msg = new BoolMsg();
+        msg.data = true;
+        ros.Publish(killTopicName, msg);
     }
 
     public void set_grasped_navigation(bool is_grasped)

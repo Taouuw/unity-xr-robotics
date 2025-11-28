@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class DisableURDFPhysics : MonoBehaviour
 {
-    public bool setLayerInsteadOfDisable = true;
-    public int layerIndex = 6;
+    // public int layerIndex = -1;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,13 +15,14 @@ public class DisableURDFPhysics : MonoBehaviour
 
         foreach (Collider collider in gameObject.GetComponentsInChildren<Collider>())
         {
-            if (setLayerInsteadOfDisable)
-            {
-                collider.gameObject.layer = layerIndex;
-            } else
-            {
-                collider.enabled = false;
-            }
+            collider.enabled = false;
+            // if (layerIndex > 0)
+            // {
+            //     collider.gameObject.layer = layerIndex;
+            // } else
+            // {
+            // 
+            // }
         }
 
         Unity.Robotics.UrdfImporter.Control.Controller controller = GetComponent<Unity.Robotics.UrdfImporter.Control.Controller>();
